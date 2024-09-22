@@ -5,6 +5,12 @@ import {
 import { Command } from "./types.ts";
 import { getLatestSave } from "../saves.ts";
 
+const intlFormatter = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "long",
+  timeStyle: "long",
+  timeZone: "America/Los_Angeles",
+});
+
 export const get_save: Command = {
   data: new SlashCommandBuilder().setName("get_save")
     .setDescription("Get the save data for the server"),
@@ -19,8 +25,8 @@ export const get_save: Command = {
     const fileBytes = await Deno.readFile(latestSave.path);
 
     await interaction.reply({
-      content: `The latest save is ${latestSave.path}
-Last modified at ${latestSave.stat.mtime}`,
+      content: `The latest save is ${latestSave.name}.
+Last modified at ${intlFormatter.format(latestSave.stat.mtime!)}`,
       file: { name: latestSave.name, buffer: fileBytes },
     });
   },
